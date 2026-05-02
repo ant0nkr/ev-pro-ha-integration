@@ -26,6 +26,11 @@ from .const import (
     AC_POWER_MAP,
     SEAT_HEAT_MAP,
     STEERING_HEAT_MAP,
+    LOCK_STATE_MAP,
+    OPEN_CLOSED_MAP,
+    TYRE_STATE_MAP,
+    SUNROOF_STATE_MAP,
+    SUNSHADE_STATE_MAP,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -38,6 +43,22 @@ _STATE_MAP_SENSORS: dict[str, dict[int, str]] = {
     "ac_power": AC_POWER_MAP,
     "driver_seat_heat": SEAT_HEAT_MAP,
     "steering_heat": STEERING_HEAT_MAP,
+    "lock_lf": LOCK_STATE_MAP,
+    "lock_rf": LOCK_STATE_MAP,
+    "lock_lr": LOCK_STATE_MAP,
+    "lock_rr": LOCK_STATE_MAP,
+    "door_lf": OPEN_CLOSED_MAP,
+    "door_rf": OPEN_CLOSED_MAP,
+    "door_lr": OPEN_CLOSED_MAP,
+    "door_rr": OPEN_CLOSED_MAP,
+    "door_hood": OPEN_CLOSED_MAP,
+    "trunk_open": OPEN_CLOSED_MAP,
+    "tyre_state_lf": TYRE_STATE_MAP,
+    "tyre_state_rf": TYRE_STATE_MAP,
+    "tyre_state_lr": TYRE_STATE_MAP,
+    "tyre_state_rr": TYRE_STATE_MAP,
+    "sunroof_state": SUNROOF_STATE_MAP,
+    "sunshade_state": SUNSHADE_STATE_MAP,
 }
 
 # Map string names to HA enums.
@@ -49,6 +70,7 @@ _DEVICE_CLASS_MAP: dict[str, SensorDeviceClass] = {
     "temperature": SensorDeviceClass.TEMPERATURE,
     "distance": SensorDeviceClass.DISTANCE,
     "speed": SensorDeviceClass.SPEED,
+    "pressure": SensorDeviceClass.PRESSURE,
 }
 
 _STATE_CLASS_MAP: dict[str, SensorStateClass] = {
@@ -120,6 +142,16 @@ class BydEvProSensor(SensorEntity):
     def native_value(self) -> Any:
         """Return the current sensor value."""
         sensors = self._hass.data[DOMAIN][self._entry.entry_id].get("sensors", {})
+        if self._key.startswith("window_") and self._key.endswith("_status"):
+            pos_key = self._key.replace("_status", "_pos")
+            pos_raw = sensors.get(pos_key)
+            if pos_raw is None:
+                return None
+            try:
+                return "Open" if float(pos_raw) > 0 else "Closed"
+            except (TypeError, ValueError):
+                return str(pos_raw)
+
         raw = sensors.get(self._key)
         if raw is None:
             return None
@@ -127,7 +159,10 @@ class BydEvProSensor(SensorEntity):
         # Map numeric states to human-readable text.
         state_map = _STATE_MAP_SENSORS.get(self._key)
         if state_map is not None:
-            int_val = int(raw) if isinstance(raw, (int, float)) else None
+            try:
+                int_val = int(raw)
+            except (TypeError, ValueError):
+                int_val = None
             if int_val is not None and int_val in state_map:
                 return state_map[int_val]
             return str(raw)
