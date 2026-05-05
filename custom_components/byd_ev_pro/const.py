@@ -80,7 +80,18 @@ SENSOR_DEFINITIONS: list[tuple[str, str, str | None, str | None, str | None, str
 ]
 
 # Human-readable state mappings
-VEHICLE_STATE_MAP = {0: "OFF", 1: "ACC", 2: "READY"}
+VEHICLE_STATE_MAP = {
+    0: "OFF",
+    1: "REMOTE BOOT",
+    2: "ON",
+    3: "REMOTE ON",
+    4: "SMART CHARGE",
+    5: "PRESS STARTUP",
+    6: "BT ON",
+    7: "HIGH TEMP DISINFECT",
+    8: "EXHIBITION MODE",
+    9: "OUTDOOR EXHIBITION MODE",
+}
 CHARGING_STATE_MAP = {0: "Not Charging", 1: "Charging", 2: "Charge Complete"}
 # gun_state=1 is a phantom value on BYD — only ≥2 means physically connected.
 GUN_STATE_MAP = {0: "Disconnected", 1: "Disconnected", 2: "AC", 3: "DC"}
@@ -95,10 +106,11 @@ TYRE_STATE_MAP = {0: "Normal", 1: "Low", 2: "High"}
 # Sunroof / sunshade state mappings.
 #
 # `0` is reported by vehicles that do not have the optional sunroof package
-# (e.g. base-trim Song Plus EV). Surfacing "Not Equipped" mirrors the
-# companion app's behaviour. Vehicles that legitimately report 0 = closed
-# will display the same label — this is intentional until we have telemetry
-# that distinguishes the two cases. See spec
+# (e.g. base-trim Song Plus EV). The companion app treats state 0 as "not
+# equipped" by hiding the tap zone entirely; here we surface that same
+# semantic as a human-readable label. Vehicles that legitimately report
+# 0 = closed will display the same label — this is intentional until we
+# have telemetry that distinguishes the two cases. See spec
 # byd-ev-pro-doc/specs/2026-05-05-companion-vehicle-screen-polish-design.md.
 SUNROOF_STATE_MAP = {0: "Not Equipped", 1: "Open", 2: "Closing", 3: "Opening"}
 SUNSHADE_STATE_MAP = {0: "Not Equipped", 1: "Open", 2: "Closing", 3: "Opening"}
