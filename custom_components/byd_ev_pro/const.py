@@ -92,5 +92,13 @@ STEERING_HEAT_MAP = {0: "Off", 1: "Off", 2: "On"}
 LOCK_STATE_MAP = {0: "Unknown", 1: "Unlocked", 2: "Locked"}
 OPEN_CLOSED_MAP = {0: "Closed", 1: "Open"}
 TYRE_STATE_MAP = {0: "Normal", 1: "Low", 2: "High"}
-SUNROOF_STATE_MAP = {0: "Closed", 1: "Open", 2: "Closing", 3: "Opening"}
-SUNSHADE_STATE_MAP = {0: "Closed", 1: "Open", 2: "Closing", 3: "Opening"}
+# Sunroof / sunshade state mappings.
+#
+# `0` is reported by vehicles that do not have the optional sunroof package
+# (e.g. base-trim Song Plus EV). Surfacing "Not Equipped" mirrors the
+# companion app's behaviour. Vehicles that legitimately report 0 = closed
+# will display the same label — this is intentional until we have telemetry
+# that distinguishes the two cases. See spec
+# byd-ev-pro-doc/specs/2026-05-05-companion-vehicle-screen-polish-design.md.
+SUNROOF_STATE_MAP = {0: "Not Equipped", 1: "Open", 2: "Closing", 3: "Opening"}
+SUNSHADE_STATE_MAP = {0: "Not Equipped", 1: "Open", 2: "Closing", 3: "Opening"}
