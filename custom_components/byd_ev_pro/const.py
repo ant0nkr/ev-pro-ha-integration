@@ -82,7 +82,7 @@ SENSOR_DEFINITIONS: list[tuple[str, str, str | None, str | None, str | None, str
 # Human-readable state mappings
 VEHICLE_STATE_MAP = {
     0: "OFF",
-    1: "REMOTE BOOT",
+    1: "ON",
     2: "ON",
     3: "REMOTE ON",
     4: "SMART CHARGE",
