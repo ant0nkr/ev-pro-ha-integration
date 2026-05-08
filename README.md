@@ -58,7 +58,7 @@ In the integration options you can configure:
 | EV Range | distance | km |
 | Odometer | distance | km |
 | Speed | speed | km/h |
-| Vehicle State | — | OFF/ACC/READY |
+| Vehicle State | — | OFF/ON/REMOTE ON |
 | Charging State | — | Not Charging/Charging/Complete |
 | Charging Gun | — | Disconnected/AC/DC |
 | Climate | — | Off/On |
