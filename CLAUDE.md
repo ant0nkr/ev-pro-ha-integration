@@ -20,7 +20,7 @@ No build step. Copy `custom_components/byd_ev_pro/` to HA config dir.
 
 3. **Webhook payload schema changes touch the head unit too** — coordinate.
 
-4. **HA instance**: `hassio.matrixnetwork.online`.
+4. **HA instance**: user-supplied Home Assistant URL (no hard-coded host in docs).
    Car pushes sensors via webhook. Voice/automation calls HA services via token.
 
 5. **Commits**: `ant0nkr` profile, no `Co-Authored-By`, no work email.
