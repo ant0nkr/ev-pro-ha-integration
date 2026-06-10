@@ -20,6 +20,7 @@ from .const import (
     DOMAIN,
     MANUFACTURER,
     SENSOR_DEFINITIONS,
+    resolve_cabin_temp_source,
     VEHICLE_STATE_MAP,
     CHARGING_STATE_MAP,
     GUN_STATE_MAP,
@@ -168,6 +169,20 @@ class BydEvProSensor(SensorEntity):
             return str(raw)
 
         return raw
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any] | None:
+        """Expose provenance for sensors that report a reading source.
+
+        The cabin temperature sensor surfaces which device provided the
+        reading (the car's own sensor or the external T-Box module) as a
+        label-only attribute. The reading value itself is never altered;
+        older vehicle software that omits the source resolves to "none".
+        """
+        if self._key == "cabin_temp":
+            sensors = self._hass.data[DOMAIN][self._entry.entry_id].get("sensors", {})
+            return {"cabin_temp_source": resolve_cabin_temp_source(sensors)}
+        return None
 
     async def async_added_to_hass(self) -> None:
         """Register update dispatcher."""

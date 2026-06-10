@@ -114,3 +114,31 @@ TYRE_STATE_MAP = {0: "Normal", 1: "Low", 2: "High"}
 # byd-ev-pro-doc/specs/2026-05-05-companion-vehicle-screen-polish-design.md.
 SUNROOF_STATE_MAP = {0: "Not Equipped", 1: "Open", 2: "Closing", 3: "Opening"}
 SUNSHADE_STATE_MAP = {0: "Not Equipped", 1: "Open", 2: "Closing", 3: "Opening"}
+
+# Cabin temperature reading source.
+#
+# The vehicle reports which device provided the cabin temperature reading:
+# the car's own sensor or the external T-Box module. This is a label only —
+# the integration never merges or re-derives readings, it just surfaces the
+# source the vehicle already decided. Older vehicle software omits the source
+# entirely; in that case the reading is untagged and the source is "none".
+CABIN_TEMP_SOURCE_MAP = {0: "none", 1: "car", 2: "tbox"}
+
+# Webhook key carrying the cabin-temperature source (sibling of "cabin_temp").
+CABIN_TEMP_SOURCE_KEY = "cabin_temp_source"
+
+
+def resolve_cabin_temp_source(sensors: dict) -> str:
+    """Return the cabin-temperature source label from a sensor mapping.
+
+    Absent, null, or unrecognised values resolve to "none" so the cabin
+    temperature sensor keeps working with older vehicle software that does
+    not report a source.
+    """
+    raw = sensors.get(CABIN_TEMP_SOURCE_KEY)
+    if raw is None:
+        return "none"
+    try:
+        return CABIN_TEMP_SOURCE_MAP.get(int(raw), "none")
+    except (TypeError, ValueError):
+        return "none"
